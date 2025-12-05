@@ -1,0 +1,357 @@
+---
+title: Architecture Overview
+description: Understanding Pack-Man's technical architecture
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+# Architecture Overview
+
+Pack-Man is built with a modern, scalable architecture designed for performance, maintainability, and extensibility.
+
+## Technology Stack
+
+### Core Framework
+- **Next.js 16** - React framework with App Router for server-side rendering and API routes
+- **TypeScript 5** - Type-safe development with strict configuration
+- **React 19** - Latest React with concurrent features and improved performance
+
+### Styling & UI
+- **Tailwind CSS 4** - Utility-first CSS with CSS variables for theming
+- **shadcn/ui** - High-quality components built on Radix UI primitives
+- **Lucide React** - Consistent icon library
+- **next-themes** - Seamless dark/light mode support
+
+### State & Data Management
+- **React Hook Form** - Performant form handling with validation
+- **Axios** - HTTP client with interceptors and error handling
+- **p-limit** - Concurrency control for parallel API requests
+
+## System Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                        Client Layer                          │
+├─────────────────────────────────────────────────────────────┤
+│  Web App  │  Chrome Extension  │  VS Code Extension (Planned)│
+└─────────────────────────────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│                     Next.js App Router                       │
+├─────────────────────────────────────────────────────────────┤
+│  Pages  │  API Routes  │  Components  │  Hooks  │  Utils    │
+└─────────────────────────────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    Service Layer                             │
+├─────────────────────────────────────────────────────────────┤
+│  GitHub Service  │  Package Services  │  Cache Service      │
+└─────────────────────────────────────────────────────────────┘
+                            │
+                            ▼
+┌─────────────────────────────────────────────────────────────┐
+│                   External APIs                              │
+├─────────────────────────────────────────────────────────────┤
+│  GitHub API  │  npm Registry  │  PyPI  │  pub.dev           │
+└─────────────────────────────────────────────────────────────┘
+```
+
+## Core Components
+
+### 1. Parser System
+
+Strategy pattern implementation for parsing different dependency file formats:
+
+```typescript
+interface DependencyParser {
+  parse(content: string): ParsedDependencies;
+  validate(content: string): boolean;
+}
+
+// Implementations
+- PackageJsonParser (npm)
+- RequirementsTxtParser (pip)
+- PubspecYamlParser (pub)
+```
+
+**Features:**
+- Automatic file type detection
+- Robust error handling
+- Support for multiple dependency sections
+- Version constraint parsing
+
+### 2. GitHub Integration
+
+Comprehensive GitHub API integration with token management:
+
+```typescript
+class GitHubService {
+  - validateRepository()
+  - searchDependencyFiles()
+  - downloadFileContent()
+  - validateToken()
+  - getRateLimit()
+}
+```
+
+**Features:**
+- Token-based authentication
+- Rate limit management
+- Private repository support
+- Automatic file discovery
+- Error recovery and retry logic
+
+### 3. Package Analysis Engine
+
+Parallel package version checking with concurrency control:
+
+```typescript
+async function analyzePackages(packages: Package[]) {
+  const limit = pLimit(10); // Max 10 concurrent requests
+  
+  const results = await Promise.all(
+    packages.map(pkg => 
+      limit(() => checkPackageVersion(pkg))
+    )
+  );
+  
+  return results;
+}
+```
+
+**Features:**
+- Concurrent API requests (10 parallel)
+- Registry-specific adapters (npm, PyPI, pub.dev)
+- Version comparison with semver
+- Comprehensive error handling
+- Progress tracking
+
+### 4. Cache System
+
+Multi-layer caching strategy for performance:
+
+```typescript
+interface CacheService {
+  successCache: Map<string, CachedResult>; // 5 min TTL
+  errorCache: Map<string, CachedError>;    // 2 min TTL
+  
+  get(key: string): CachedResult | null;
+  set(key: string, value: any, ttl: number): void;
+  clear(): void;
+}
+```
+
+**Features:**
+- Separate success and error caches
+- Configurable TTL per cache type
+- Automatic cleanup of expired entries
+- Size limiting (max 100 entries)
+- Cache invalidation on API changes
+
+## Data Flow
+
+### 1. File Upload Flow
+
+```
+User uploads file
+    ↓
+File detection (MIME type, extension, content)
+    ↓
+Parser selection (npm/pip/pub)
+    ↓
+Dependency extraction
+    ↓
+Parallel version checking
+    ↓
+Results aggregation
+    ↓
+UI update with statistics
+```
+
+### 2. GitHub URL Flow
+
+```
+User enters GitHub URL
+    ↓
+URL validation (real-time)
+    ↓
+Repository validation (GitHub API)
+    ↓
+Dependency file discovery
+    ↓
+File selection by user
+    ↓
+File download (raw content)
+    ↓
+Standard analysis flow
+```
+
+### 3. Chrome Extension Flow
+
+```
+User visits GitHub page
+    ↓
+Content script detects repository
+    ↓
+Background worker checks cache
+    ↓
+API request (if not cached)
+    ↓
+Badge injection into page
+    ↓
+Cache result (5 min success, 2 min error)
+```
+
+## API Architecture
+
+### Endpoints
+
+**POST /api/analyze-packages**
+- Accepts file content and filename
+- Returns package analysis results
+- Handles all supported formats
+
+**GET /api/health**
+- Health check endpoint
+- Returns service status
+
+### Request/Response Flow
+
+```typescript
+// Request
+{
+  content: string;      // File content
+  fileName?: string;    // Optional filename for detection
+}
+
+// Response
+{
+  packages: PackageInfo[];
+  summary: AnalysisSummary;
+}
+```
+
+## Extension Architecture
+
+### Chrome Extension
+
+**Manifest V3 Architecture:**
+- Service worker for background tasks
+- Content script for page injection
+- Popup for configuration
+- Chrome Storage API for persistence
+
+**Components:**
+- `background.js` - API calls, caching, token management
+- `content.js` - DOM manipulation, badge injection
+- `popup.js` - Token configuration, settings
+
+### VS Code Extension (Planned)
+
+**Architecture:**
+- Language Server Protocol for diagnostics
+- CodeLens provider for inline indicators
+- Hover provider for package details
+- Command palette integration
+- Webview panels for detailed analysis
+
+## Performance Optimizations
+
+### 1. Concurrent Processing
+- Parallel API requests with p-limit
+- Configurable concurrency (default: 10)
+- Prevents overwhelming registries
+
+### 2. Caching Strategy
+- Multi-layer cache (success/error)
+- Configurable TTL per cache type
+- Automatic cleanup and size limiting
+
+### 3. Progressive Enhancement
+- Server-side rendering for initial load
+- Client-side hydration for interactivity
+- Optimistic UI updates
+
+### 4. Code Splitting
+- Dynamic imports for heavy components
+- Route-based code splitting
+- Lazy loading for non-critical features
+
+## Security Considerations
+
+### Token Management
+- Client-side storage (localStorage)
+- Never exposed in logs or errors
+- Secure transmission (HTTPS only)
+- Token validation before use
+
+### API Security
+- CORS configuration
+- Rate limiting (planned)
+- Input validation and sanitization
+- Error message sanitization
+
+### Extension Security
+- Content Security Policy (CSP)
+- Manifest V3 compliance
+- Minimal permissions
+- Secure message passing
+
+## Scalability
+
+### Current Limits
+- No hard limit on file size (recommended < 1MB)
+- 10 concurrent package checks
+- No rate limiting (planned)
+
+### Future Enhancements
+- Redis caching for multi-instance deployments
+- Database for analytics and history
+- Queue system for large projects
+- Webhook support for CI/CD integration
+
+## Testing Strategy
+
+### Unit Tests
+- Parser logic (Vitest)
+- Utility functions
+- Version comparison
+- URL validation
+
+### Integration Tests
+- API endpoints
+- GitHub service
+- Cache service
+
+### E2E Tests (Planned)
+- Full user workflows
+- Extension functionality
+- Cross-browser compatibility
+
+## Deployment
+
+### Web Application
+- **Build:** Next.js production build
+- **Environment:** Node.js 18+
+
+### Chrome Extension
+- **Distribution:** Chrome Web Store (planned)
+- **Development:** Load unpacked
+- **Updates:** Automatic via Chrome Web Store
+
+## Monitoring & Observability
+
+
+### Planned
+- Error tracking (Sentry)
+- Performance monitoring
+- API usage analytics
+- User behavior tracking
+
+## Next Steps
+
+- Learn about [GitHub Integration](/docs/guides/github-integration)
+- Explore the [API Reference](/docs/api)
+- Check [Extension Development](/docs/extensions/overview)

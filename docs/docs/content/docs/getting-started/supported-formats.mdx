@@ -1,0 +1,111 @@
+---
+title: Supported Formats
+description: Package managers and file formats supported by Pack-Man
+---
+
+import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
+
+# Supported Formats
+
+Pack-Man supports multiple package managers and dependency file formats.
+
+## Package Managers
+
+<Tabs items={['npm', 'pip', 'pub']}>
+  <Tab value="npm">
+    ### npm (Node.js)
+    
+    **File:** `package.json`
+    
+    **Registry:** [npmjs.com](https://www.npmjs.com)
+    
+    **Example:**
+    ```json
+    {
+      "dependencies": {
+        "react": "^18.0.0",
+        "next": "^13.0.0"
+      },
+      "devDependencies": {
+        "typescript": "^4.9.0"
+      }
+    }
+    ```
+    
+    **Supported Features:**
+    - Dependencies and devDependencies
+    - Semantic versioning (^, ~, >=, etc.)
+    - Package descriptions and homepages
+    - Latest version checking
+  </Tab>
+  <Tab value="pip">
+    ### pip (Python)
+    
+    **File:** `requirements.txt`
+    
+    **Registry:** [pypi.org](https://pypi.org)
+    
+    **Example:**
+    ```
+    Django==4.1.0
+    requests>=2.28.0
+    numpy==1.24.0
+    pandas~=1.5.0
+    ```
+    
+    **Supported Features:**
+    - Exact version pinning (==)
+    - Minimum version (>=)
+    - Compatible release (~=)
+    - Package descriptions
+    - Latest version checking
+  </Tab>
+  <Tab value="pub">
+    ### pub (Flutter/Dart)
+    
+    **File:** `pubspec.yaml`
+    
+    **Registry:** [pub.dev](https://pub.dev)
+    
+    **Example:**
+    ```yaml
+    dependencies:
+      flutter:
+        sdk: flutter
+      http: ^0.13.5
+      provider: ^6.0.0
+
+    dev_dependencies:
+      flutter_test:
+        sdk: flutter
+    ```
+    
+    **Supported Features:**
+    - Dependencies and dev_dependencies
+    - Caret syntax (^)
+    - SDK dependencies
+    - Package descriptions
+    - Latest version checking
+  </Tab>
+</Tabs>
+
+## Version Status
+
+Pack-Man categorizes each package into one of three statuses:
+
+| Status | Description | Badge Color |
+|--------|-------------|-------------|
+| **Up-to-date** | Current version matches or exceeds the latest available version | Green |
+| **Outdated** | A newer version is available | Orange |
+| **Error** | Unable to fetch version information (package not found, network error, etc.) | Red |
+
+## Coming Soon
+
+We're working on adding support for more package managers:
+
+- 🐹 **Go Modules** (go.mod)
+- 🦀 **Rust Cargo** (Cargo.toml)
+- 💎 **Ruby Gems** (Gemfile)
+- 🐘 **PHP Composer** (composer.json)
+- ☕ **Maven** (pom.xml)
+- 🎯 **Gradle** (build.gradle)

@@ -1,0 +1,136 @@
+---
+title: GitHub Token Setup
+description: Configure GitHub Personal Access Token for enhanced features
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+
+# GitHub Token Setup
+
+Pack-Man can work with or without a GitHub Personal Access Token (PAT). However, using a token provides several benefits.
+
+## Why Use a GitHub Token?
+
+<Callout type="info">
+Using a GitHub token is optional but highly recommended for the best experience.
+</Callout>
+
+### Benefits
+
+- **Higher rate limits**: 5,000 requests per hour (vs 60 without token)
+- **Access to private repositories**: If you have access to them
+- **Better reliability**: Reduced chance of hitting rate limits
+
+### Rate Limits Comparison
+
+| Authentication | Requests per Hour |
+|----------------|------------------|
+| No Token       | 60               |
+| With Token     | 5,000            |
+
+## Creating a GitHub Personal Access Token
+
+<Steps>
+<Step>
+### Navigate to GitHub Settings
+
+Go to [GitHub Settings > Developer settings > Personal access tokens](https://github.com/settings/tokens)
+</Step>
+
+<Step>
+### Generate New Token
+
+Click "Generate new token" > "Generate new token (classic)"
+</Step>
+
+<Step>
+### Configure Token
+
+- Give your token a descriptive name (e.g., "Pack-Man Dependency Analyzer")
+- Set an expiration date (recommended: 90 days or 1 year)
+- Select the following scopes:
+  - `public_repo` - Access to public repositories
+  - `repo` - Full access to private repositories (only if needed)
+</Step>
+
+<Step>
+### Copy Token
+
+Click "Generate token" and copy it immediately - you won't be able to see it again!
+</Step>
+</Steps>
+
+## Configuring the Token
+
+### In the Web Application
+
+1. Open Pack-Man in your browser
+2. Click on "Settings" in the navigation menu
+3. In the "GitHub Token Configuration" section:
+   - Paste your token in the input field
+   - Click "Save Token"
+   - The system will validate your token automatically
+
+### In the Chrome Extension
+
+1. Click the Pack-Man extension icon in your browser toolbar
+2. Paste your GitHub token in the input field
+3. Click "Save Token"
+4. The extension will validate the token and display your GitHub username if successful
+
+### For Local Development
+
+Create a `.env.local` file in the project root:
+
+```bash
+GITHUB_TOKEN=your_github_token_here
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+```
+
+Then restart the development server:
+
+```bash
+npm run dev
+```
+
+## Token Security
+
+<Callout type="warn">
+Never commit tokens to version control or share them publicly.
+</Callout>
+
+### Best Practices
+
+- Use environment variables for server deployments
+- Regularly rotate your tokens
+- Use minimal required permissions
+- Monitor token usage in GitHub settings
+- Revoke unused tokens
+
+## Troubleshooting
+
+### Token Validation Failed
+
+- Ensure the token is copied correctly (no extra spaces)
+- Check that the token hasn't expired
+- Verify the token has the required scopes
+
+### Rate Limit Issues
+
+- Check your current rate limit in the Settings page
+- Wait for the rate limit to reset (shown in the interface)
+- Consider using a token if you haven't already
+
+### Private Repository Access
+
+- Ensure your token has `repo` scope (not just `public_repo`)
+- Verify you have access to the repository
+- Check that the repository URL is correct
+
+## Token Management
+
+- **View current status**: Go to Settings to see if a token is configured
+- **Update token**: Simply paste a new token and save
+- **Remove token**: Click "Remove Token" in the Settings page
+- **Check rate limits**: View remaining requests in the Settings page

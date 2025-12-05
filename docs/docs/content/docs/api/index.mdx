@@ -1,0 +1,46 @@
+---
+title: API Reference
+description: Complete API documentation for Pack-Man
+---
+
+import { Card, Cards } from 'fumadocs-ui/components/card';
+import { Callout } from 'fumadocs-ui/components/callout';
+
+# API Reference
+
+The Pack-Man API is a RESTful interface that allows you to analyze software project dependencies. It supports multiple package managers (npm, pip, pub) and provides detailed information about dependency update status.
+
+## Key Features
+
+- ✅ Dependency analysis from configuration files
+- 🐙 GitHub repository integration with automatic file detection
+- 🔍 Updated version checking against official registries
+- 📊 Project summary statistics
+- 🔗 Detailed package information (description, homepage)
+- 🚀 Support for npm (package.json), pip (requirements.txt), and pub (pubspec.yaml)
+- 🔐 GitHub token support for private repositories
+
+## Base URLs
+
+- **Development:** `http://localhost:3000`
+- **Production:** [URL will be defined after deployment]
+
+## Authentication
+
+<Callout type="info">
+Currently, the API does not require authentication. All endpoints are public and can be accessed directly.
+</Callout>
+
+## Available Endpoints
+
+<Cards>
+  <Card title="Health Check" href="/docs/api/health" />
+  <Card title="Analyze Packages" href="/docs/api/analyze-packages" />
+</Cards>
+
+## Limits and Considerations
+
+- **Maximum file size:** No specific limit, but files smaller than 1MB are recommended
+- **Rate limiting:** Currently not implemented
+- **Timeout:** Requests may take up to 30 seconds depending on the number of packages
+- **Cache:** Version information is obtained in real-time from official registries

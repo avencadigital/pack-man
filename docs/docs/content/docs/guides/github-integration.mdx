@@ -1,0 +1,214 @@
+---
+title: GitHub Integration
+description: Analyze dependencies directly from GitHub repositories
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+
+# GitHub Integration
+
+Pack-Man can analyze dependencies directly from GitHub repositories, automatically detecting and analyzing dependency files without manual download.
+
+## Features
+
+- **Automatic File Detection** - Searches for package.json, requirements.txt, and pubspec.yaml
+- **Multiple File Support** - Handles repositories with multiple dependency files
+- **Private Repository Access** - Works with private repos when configured with a GitHub token
+- **Real-time Validation** - Validates repository URLs as you type
+- **Progress Tracking** - Shows detailed progress during repository analysis
+
+## How It Works
+
+<Steps>
+<Step>
+### Enter Repository URL
+
+Paste a GitHub repository URL in the format:
+```
+https://github.com/owner/repository
+```
+
+The URL is validated in real-time with visual feedback.
+</Step>
+
+<Step>
+### Automatic File Discovery
+
+Pack-Man searches the repository root for supported dependency files:
+- `package.json` (npm)
+- `requirements.txt` (pip)
+- `pubspec.yaml` (pub)
+</Step>
+
+<Step>
+### Select and Analyze
+
+If multiple files are found, select the one you want to analyze. The file is downloaded and analyzed automatically.
+</Step>
+</Steps>
+
+## URL Validation
+
+Pack-Man validates GitHub URLs in real-time:
+
+### Valid URL Formats
+
+✅ `https://github.com/owner/repo`
+✅ `http://github.com/owner/repo`
+✅ `github.com/owner/repo`
+
+### Invalid URL Formats
+
+❌ `https://github.com/owner` (missing repository)
+❌ `https://gitlab.com/owner/repo` (not GitHub)
+❌ `https://github.com/owner/repo/tree/main` (includes path)
+
+<Callout type="info">
+Pack-Man automatically adds `https://` if you paste a URL without protocol.
+</Callout>
+
+## Private Repositories
+
+To analyze private repositories:
+
+1. **Create a GitHub Token** - Follow the [GitHub Token Setup](/docs/getting-started/github-token) guide
+2. **Configure Token** - Add your token in the GitHub Token Configuration dialog
+3. **Analyze Repository** - Enter the private repository URL and analyze normally
+
+<Callout type="warn">
+Without a token, you can only analyze public repositories and are limited to 60 requests per hour.
+</Callout>
+
+## Rate Limits
+
+| Type | Without Token | With Token |
+|------|--------------|------------|
+| Requests/hour | 60 | 5,000 |
+| Private repos | ❌ No | ✅ Yes |
+| Recommended for | Testing | Production |
+
+## Multiple Dependency Files
+
+When a repository contains multiple dependency files:
+
+1. All supported files are displayed with their details
+2. Each file shows:
+   - File name and type
+   - File size
+   - Package manager
+3. Click "Analyze" on any file to start analysis
+
+<Callout type="info">
+If only one dependency file is found, it's automatically selected for analysis.
+</Callout>
+
+## Error Handling
+
+### Common Errors
+
+**Repository not found**
+- Verify the URL is correct
+- Check if the repository is private (requires token)
+- Ensure the repository exists
+
+**No dependency files found**
+- Repository may not have dependency files in the root
+- Files may be in subdirectories (not currently supported)
+- File names may not match standard conventions
+
+**Rate limit exceeded**
+- Wait for the rate limit to reset
+- Configure a GitHub token for higher limits
+- Token increases limit from 60 to 5,000 requests/hour
+
+**Access denied (403)**
+- Repository is private and no token is configured
+- Token lacks required permissions
+- Token may be expired or revoked
+
+## Progress Stages
+
+During analysis, you'll see progress through these stages:
+
+1. **Validating URL** - Checking if the URL is valid
+2. **Searching repository** - Looking for the repository
+3. **Searching for dependency files** - Finding supported files
+4. **Downloading file** - Fetching file content
+5. **Analyzing packages** - Checking package versions
+
+## Best Practices
+
+### For Public Repositories
+
+- No token required for basic usage
+- Be mindful of rate limits (60 requests/hour)
+- Consider adding a token for frequent use
+
+### For Private Repositories
+
+- Always configure a GitHub token
+- Ensure token has `repo` scope
+- Store token securely (never share it)
+
+### For Organizations
+
+- Use a dedicated service account token
+- Monitor rate limit usage
+- Consider caching results for frequently analyzed repos
+
+## Troubleshooting
+
+### URL Not Validating
+
+- Check for typos in the URL
+- Ensure it's a GitHub URL (not GitLab, Bitbucket, etc.)
+- Remove any path segments after the repository name
+
+### Files Not Found
+
+- Verify files exist in the repository root
+- Check file names match exactly (case-sensitive)
+- Ensure files are committed to the default branch
+
+### Download Fails
+
+- Check your internet connection
+- Verify the file isn't too large (>1MB may timeout)
+- Try again after a few seconds
+
+### Token Issues
+
+- Verify token is valid and not expired
+- Check token has correct permissions (`repo` scope)
+- Try generating a new token if problems persist
+
+## API Integration
+
+You can also use the GitHub integration programmatically:
+
+```javascript
+import { githubService } from '@/lib/github-service';
+
+// Search for dependency files
+const files = await githubService.searchDependencyFiles('owner', 'repo');
+
+// Download file content
+const content = await githubService.downloadFileContent(files[0].downloadUrl);
+
+// Analyze with Pack-Man API
+const response = await fetch('/api/analyze-packages', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    content,
+    fileName: files[0].name
+  })
+});
+```
+
+## Next Steps
+
+- Learn about [GitHub Token Setup](/docs/getting-started/github-token)
+- Explore the [Chrome Extension](/docs/extensions/chrome) for in-context analysis
+- Check the [API Reference](/docs/api/analyze-packages) for programmatic access

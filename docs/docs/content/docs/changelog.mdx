@@ -1,0 +1,145 @@
+---
+title: Changelog
+description: Latest updates and improvements to Pack-Man
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+
+# Changelog
+
+All notable changes to Pack-Man are documented here.
+
+## [Latest] - December 2024
+
+### 🎉 Major Features
+
+#### GitHub Integration
+- **Direct Repository Analysis** - Analyze GitHub repositories without downloading files
+- **Automatic File Detection** - Searches for package.json, requirements.txt, and pubspec.yaml
+- **Real-time URL Validation** - Validates GitHub URLs as you type with visual feedback
+- **Private Repository Support** - Works with private repos using GitHub tokens
+- **Multi-file Support** - Handles repositories with multiple dependency files
+
+#### Enhanced Token Management
+- **Secure Token Storage** - Client-side localStorage with validation
+- **Rate Limit Tracking** - Real-time rate limit monitoring
+- **Token Validation** - Validates tokens before use with user feedback
+- **Automatic Refresh** - Rate limits update automatically
+
+#### Improved User Experience
+- **Three Input Methods** - File upload, paste content, or GitHub URL
+- **Drag & Drop** - Drag files directly into the upload area
+- **Progress Tracking** - Real-time progress indicators during analysis
+- **Auto-detection** - Automatic file type detection from content
+
+### 🔧 Improvements
+
+#### Performance
+- **Parallel Processing** - Concurrent package checks (10 parallel requests)
+- **Smart Caching** - Multi-layer cache with configurable TTL
+- **Optimized Parsing** - Faster file parsing with strategy pattern
+- **Progressive Enhancement** - Better initial load performance
+
+#### Developer Experience
+- **TypeScript Strict Mode** - Full type safety across codebase
+- **Comprehensive JSDoc** - Detailed documentation for all components
+- **Accessibility Focus** - WCAG 2.1 AA compliance throughout
+- **Error Handling** - Improved error messages with actionable guidance
+
+#### Chrome Extension
+- **Custom API Endpoint** - Configure self-hosted instances
+- **Enhanced Caching** - Separate success (5min) and error (2min) caches
+- **Retry Logic** - Automatic retry with exponential backoff
+- **Support Button** - Built-in donation support via Buy Me a Coffee
+
+### 🐛 Bug Fixes
+
+- Fixed authentication header format (Bearer token)
+- Improved error messages for private repository access
+- Enhanced debug logging for troubleshooting
+- Better visual feedback for authentication errors
+- Fixed file type detection edge cases
+- Resolved cache invalidation issues
+
+### 📚 Documentation
+
+- **New Guides** - GitHub Integration, Analyzing Dependencies
+- **Architecture Overview** - Complete technical architecture documentation
+- **API Updates** - Enhanced API documentation with examples
+- **Extension Docs** - Updated Chrome extension documentation
+
+### 🔐 Security
+
+- **Token Security** - Never exposed in logs or errors
+- **Input Validation** - Comprehensive validation for all inputs
+- **HTTPS Only** - Secure transmission for all API calls
+- **CSP Compliance** - Content Security Policy for extensions
+
+## Previous Versions
+
+### Version 1.2.0 - Chrome Extension
+
+**Added:**
+- Support button with Buy Me a Coffee integration
+- Custom API endpoint configuration
+- Enhanced cache management
+
+**Fixed:**
+- Token authentication issues
+- Cache invalidation bugs
+- Error message clarity
+
+### Version 1.1.0 - Core Features
+
+**Added:**
+- Dark/light mode support
+- Roadmap voting system
+- Enhanced UI components
+- Progress indicators
+
+**Improved:**
+- Performance optimizations
+- Mobile responsiveness
+- Accessibility features
+
+### Version 1.0.0 - Initial Release
+
+**Features:**
+- Multi-format support (npm, pip, pub)
+- File upload and manual input
+- Real-time analysis
+- Visual statistics
+- Update command generation
+- Documentation links
+
+## Upcoming Features
+
+<Callout type="info">
+Check our [Roadmap](/docs/roadmap) for planned features and vote on what you'd like to see next!
+</Callout>
+
+### In Development
+
+- **VS Code Extension** - Analyze dependencies directly in your editor
+- **Monorepo Support** - Workspace detection and cross-package analysis
+- **Security Scanner** - Vulnerability detection and alerts
+
+### Planned
+
+- **CLI Tool** - Command-line interface with CI/CD integration
+- **Go Modules Support** - go.mod and go.sum analysis
+- **Rust Cargo Support** - Cargo.toml and Cargo.lock analysis
+- **Docker Support** - Dockerfile and docker-compose.yml analysis
+- **API Rate Limiting** - Protect against abuse
+- **Webhook Support** - CI/CD integration
+
+## Contributing
+
+We welcome contributions! See our [Contributing Guide](https://github.com/yourusername/pack-man/blob/main/CONTRIBUTING.md) for details.
+
+## Support
+
+- 📖 [Documentation](/docs)
+- 🐛 [Report Issues](https://github.com/yourusername/pack-man/issues)
+- 💬 [Discussions](https://github.com/yourusername/pack-man/discussions)
+- ☕ [Support Development](https://buymeacoffee.com/packman)

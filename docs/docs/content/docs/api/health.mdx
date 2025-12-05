@@ -1,0 +1,81 @@
+---
+title: Health Check
+description: Endpoint to check API status
+---
+
+import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+
+# Health Check
+
+Checks if the API is working correctly.
+
+## Endpoint
+
+```
+GET /api/health
+```
+
+## Parameters
+
+No parameters required.
+
+## Request Example
+
+<Tabs items={['cURL', 'JavaScript', 'Python']}>
+  <Tab value="cURL">
+    ```bash
+    curl -X GET http://localhost:3000/api/health
+    ```
+  </Tab>
+  <Tab value="JavaScript">
+    ```javascript
+    const checkHealth = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/api/health');
+        const data = await response.json();
+        console.log(data);
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+
+    checkHealth();
+    ```
+  </Tab>
+  <Tab value="Python">
+    ```python
+    import requests
+
+    def check_health():
+        try:
+            response = requests.get('http://localhost:3000/api/health')
+            response.raise_for_status()
+            print(response.json())
+        except requests.exceptions.RequestException as e:
+            print(f"Error: {e}")
+
+    check_health()
+    ```
+  </Tab>
+</Tabs>
+
+## Response
+
+### Success (200 OK)
+
+```json
+{
+  "message": "Good!"
+}
+```
+
+## Status Codes
+
+| Code | Description |
+|------|-------------|
+| `200` | API working normally |
+
+<Callout type="info">
+This endpoint is useful for monitoring and health checks in production environments.
+</Callout>

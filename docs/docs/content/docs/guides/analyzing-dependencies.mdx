@@ -1,0 +1,272 @@
+---
+title: Analyzing Dependencies
+description: Learn how to analyze your project dependencies with Pack-Man
+---
+
+import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+
+# Analyzing Dependencies
+
+Pack-Man provides three flexible methods to analyze your project dependencies. Choose the method that best fits your workflow.
+
+## Input Methods Overview
+
+| Method | Best For | Features |
+|--------|----------|----------|
+| **File Upload** | Local files | Drag & drop, file browser |
+| **Paste Content** | Quick checks | Auto-detection, no file needed |
+| **GitHub URL** | Remote repos | Auto-discovery, private repo support |
+
+## Method 1: File Upload
+
+Perfect for analyzing local dependency files with drag-and-drop convenience.
+
+<Steps>
+<Step>
+### Select Upload Tab
+
+Click the "File Upload" tab in the analysis section.
+</Step>
+
+<Step>
+### Choose Your File
+
+**Option A: Drag and Drop**
+- Drag your dependency file into the upload area
+- Visual feedback shows when file is ready to drop
+
+**Option B: File Browser**
+- Click "Choose File" button
+- Navigate to your dependency file
+- Select and open the file
+</Step>
+
+<Step>
+### Verify and Analyze
+
+- File name and size are displayed
+- File type is automatically detected
+- Click "Analyze" to start the analysis
+</Step>
+</Steps>
+
+### Supported Files
+
+<Tabs items={['npm', 'pip', 'pub']}>
+  <Tab value="npm">
+    **package.json**
+    - Location: Project root
+    - Contains: dependencies, devDependencies
+    - Format: JSON
+  </Tab>
+  <Tab value="pip">
+    **requirements.txt**
+    - Location: Project root
+    - Contains: Python packages with versions
+    - Format: Plain text
+  </Tab>
+  <Tab value="pub">
+    **pubspec.yaml**
+    - Location: Project root
+    - Contains: dependencies, dev_dependencies
+    - Format: YAML
+  </Tab>
+</Tabs>
+
+## Method 2: Paste Content
+
+Ideal for quick analysis without file management.
+
+<Steps>
+<Step>
+### Select Paste Tab
+
+Click the "Paste Content" tab in the analysis section.
+</Step>
+
+<Step>
+### Paste Your Content
+
+- Copy content from your dependency file
+- Paste directly into the text area
+- File type is automatically detected from content structure
+</Step>
+
+<Step>
+### Review and Analyze
+
+- Detected file type is shown with a badge
+- Content is validated in real-time
+- Click "Analyze" to start the analysis
+</Step>
+</Steps>
+
+<Callout type="info">
+Pack-Man automatically detects file type by analyzing content structure:
+- JSON format → package.json (npm)
+- Line-based with `==` or `>=` → requirements.txt (pip)
+- YAML with `dependencies:` → pubspec.yaml (pub)
+</Callout>
+
+## Method 3: GitHub URL
+
+Analyze repositories directly without downloading files.
+
+<Steps>
+<Step>
+### Select GitHub Tab
+
+Click the "GitHub URL" tab in the analysis section.
+</Step>
+
+<Step>
+### Enter Repository URL
+
+Paste a GitHub repository URL:
+```
+https://github.com/owner/repository
+```
+
+URL validation happens in real-time with visual feedback.
+</Step>
+
+<Step>
+### Search for Files
+
+Click "Search Dependency Files" to discover available files in the repository.
+</Step>
+
+<Step>
+### Select and Analyze
+
+- All found dependency files are listed
+- Click "Analyze" on the file you want to check
+- File is downloaded and analyzed automatically
+</Step>
+</Steps>
+
+<Callout type="warn">
+For private repositories, configure a [GitHub token](/docs/getting-started/github-token) first.
+</Callout>
+
+## Analysis Process
+
+Once you start analysis, Pack-Man:
+
+1. **Parses the file** - Extracts package names and versions
+2. **Queries registries** - Checks latest versions from npm, PyPI, or pub.dev
+3. **Compares versions** - Determines if packages are up-to-date or outdated
+4. **Generates report** - Creates detailed analysis with statistics
+
+### Progress Tracking
+
+During analysis, you'll see:
+- Real-time progress bar (0-100%)
+- Current stage indicator
+- Estimated time remaining
+- Number of packages processed
+
+### Analysis Time
+
+Typical analysis times:
+- **Small projects** (< 10 packages): 2-5 seconds
+- **Medium projects** (10-50 packages): 5-15 seconds
+- **Large projects** (> 50 packages): 15-30 seconds
+
+<Callout type="info">
+Analysis time depends on the number of packages and registry response times.
+</Callout>
+
+## Understanding Results
+
+After analysis completes, you'll see:
+
+### Summary Statistics
+- Total packages analyzed
+- Up-to-date packages (green)
+- Outdated packages (orange)
+- Packages with errors (red)
+
+### Package Details
+For each package:
+- Current version vs. latest version
+- Package description
+- Homepage link
+- Update command
+- Status indicator
+
+### Status Types
+
+| Status | Color | Meaning |
+|--------|-------|---------|
+| Up-to-date | 🟢 Green | Current version matches latest |
+| Outdated | 🟠 Orange | Newer version available |
+| Error | 🔴 Red | Unable to fetch version info |
+
+## Troubleshooting
+
+### File Not Detected
+
+**Problem:** File type not recognized
+
+**Solutions:**
+- Ensure file name matches standard conventions
+- Check file format is valid (JSON, YAML, or plain text)
+- Try pasting content instead of uploading
+
+### No Packages Found
+
+**Problem:** Analysis returns zero packages
+
+**Solutions:**
+- Verify file contains dependency declarations
+- Check for syntax errors in the file
+- Ensure dependencies section exists and is not empty
+
+### Analysis Fails
+
+**Problem:** Analysis stops with an error
+
+**Solutions:**
+- Check your internet connection
+- Verify file content is valid
+- Try again after a few seconds
+- Check if package registries are accessible
+
+### Slow Analysis
+
+**Problem:** Analysis takes too long
+
+**Solutions:**
+- Large projects naturally take longer
+- Check your internet connection speed
+- Package registries may be experiencing delays
+- Consider analyzing smaller dependency subsets
+
+## Best Practices
+
+### For Accurate Results
+
+- Use the most recent version of your dependency file
+- Ensure file syntax is valid before analysis
+- Include all dependency sections (dependencies, devDependencies)
+
+### For Faster Analysis
+
+- Remove commented-out dependencies
+- Clean up unused packages before analysis
+- Use GitHub URL method for remote repositories
+
+### For Private Projects
+
+- Configure GitHub token for private repositories
+- Never share dependency files containing secrets
+- Use environment variables for sensitive configuration
+
+## Next Steps
+
+- Learn about [GitHub Integration](/docs/guides/github-integration)
+- Understand [Analysis Results](/docs/guides/understanding-results)
+- Generate [Update Commands](/docs/guides/updating-packages)

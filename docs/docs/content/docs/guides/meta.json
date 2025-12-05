@@ -1,0 +1,10 @@
+{
+    "title": "Guides",
+    "pages": [
+        "analyzing-dependencies",
+        "github-integration",
+        "understanding-results",
+        "updating-packages",
+        "troubleshooting"
+    ]
+}

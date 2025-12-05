@@ -1,0 +1,272 @@
+---
+title: Analyze Packages
+description: Endpoint for dependency analysis
+---
+
+import { Tabs, Tab } from 'fumadocs-ui/components/tabs';
+import { Callout } from 'fumadocs-ui/components/callout';
+
+# Analyze Packages
+
+Analyzes a dependency file and returns information about the update status of each package.
+
+## Endpoint
+
+```
+POST /api/analyze-packages
+```
+
+## Content-Type
+
+```
+application/json
+```
+
+## Request Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `content` | string | ✅ Yes | Content of the dependency file |
+| `fileName` | string | ❌ No | File name (used for automatic type detection) |
+
+## Request Example
+
+<Tabs items={['cURL', 'JavaScript', 'Python']}>
+  <Tab value="cURL">
+    ```bash
+    curl -X POST http://localhost:3000/api/analyze-packages \
+      -H "Content-Type: application/json" \
+      -d '{
+        "content": "{\"dependencies\": {\"react\": \"^18.0.0\", \"next\": \"^13.0.0\"}}",
+        "fileName": "package.json"
+      }'
+    ```
+  </Tab>
+  <Tab value="JavaScript">
+    ```javascript
+    const analyzePackages = async (content, fileName) => {
+      try {
+        const response = await fetch('http://localhost:3000/api/analyze-packages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ content, fileName })
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error('Error analyzing packages:', error);
+        throw error;
+      }
+    };
+
+    // Usage
+    const packageJson = JSON.stringify({
+      dependencies: {
+        "react": "^18.0.0",
+        "next": "^13.0.0"
+      }
+    });
+
+    analyzePackages(packageJson, 'package.json')
+      .then(result => console.log(result))
+      .catch(error => console.error(error));
+    ```
+  </Tab>
+  <Tab value="Python">
+    ```python
+    import requests
+    import json
+
+    def analyze_packages(content, file_name=None):
+        url = 'http://localhost:3000/api/analyze-packages'
+        payload = {
+            'content': content,
+            'fileName': file_name
+        }
+
+        try:
+            response = requests.post(url, json=payload)
+            response.raise_for_status()
+            return response.json()
+        except requests.exceptions.RequestException as e:
+            print(f"Error analyzing packages: {e}")
+            raise
+
+    # Usage
+    requirements_content = """Django==4.1.0
+    requests>=2.28.0
+    numpy==1.24.0"""
+
+    result = analyze_packages(requirements_content, 'requirements.txt')
+    print(json.dumps(result, indent=2))
+    ```
+  </Tab>
+</Tabs>
+
+## Response
+
+### Success (200 OK)
+
+```json
+{
+  "packages": [
+    {
+      "name": "react",
+      "currentVersion": "^18.0.0",
+      "latestVersion": "18.2.0",
+      "status": "outdated",
+      "packageManager": "npm",
+      "description": "React is a JavaScript library for building user interfaces.",
+      "homepage": "https://reactjs.org/"
+    },
+    {
+      "name": "next",
+      "currentVersion": "^13.0.0",
+      "latestVersion": "14.1.0",
+      "status": "outdated",
+      "packageManager": "npm",
+      "description": "The React Framework",
+      "homepage": "https://nextjs.org"
+    }
+  ],
+  "summary": {
+    "total": 2,
+    "upToDate": 0,
+    "outdated": 2,
+    "errors": 0
+  }
+}
+```
+
+## Response Structure
+
+### `PackageInfo` Object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `name` | string | Package name |
+| `currentVersion` | string | Current version specified in the file |
+| `latestVersion` | string | Latest available version |
+| `status` | string | Status: "up-to-date", "outdated" or "error" |
+| `packageManager` | string | Manager: "npm", "pip" or "pub" |
+| `description` | string | Package description (optional) |
+| `homepage` | string | Package homepage URL (optional) |
+
+### `Summary` Object
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `total` | number | Total packages analyzed |
+| `upToDate` | number | Up-to-date packages |
+| `outdated` | number | Outdated packages |
+| `errors` | number | Packages with verification errors |
+
+## Status Codes
+
+| Code | Description |
+|------|-------------|
+| `200` | Analysis completed successfully |
+| `400` | Invalid parameters or malformed content |
+| `500` | Internal server error |
+
+## Error Examples
+
+### Missing content (400)
+
+```json
+{
+  "error": "Content is required"
+}
+```
+
+### Parsing failure (400)
+
+```json
+{
+  "error": "Failed to parse file content"
+}
+```
+
+### Internal error (500)
+
+```json
+{
+  "error": "Internal server error"
+}
+```
+
+## Supported File Formats
+
+<Tabs items={['npm', 'pip', 'pub']}>
+  <Tab value="npm">
+    ### package.json
+    ```json
+    {
+      "dependencies": {
+        "react": "^18.0.0",
+        "next": "^13.0.0"
+      },
+      "devDependencies": {
+        "typescript": "^4.9.0"
+      }
+    }
+    ```
+  </Tab>
+  <Tab value="pip">
+    ### requirements.txt
+    ```
+    Django==4.1.0
+    requests>=2.28.0
+    numpy==1.24.0
+    ```
+  </Tab>
+  <Tab value="pub">
+    ### pubspec.yaml
+    ```yaml
+    dependencies:
+      flutter:
+        sdk: flutter
+      http: ^0.13.5
+
+    dev_dependencies:
+      flutter_test:
+        sdk: flutter
+    ```
+  </Tab>
+</Tabs>
+
+## Common Errors
+
+<Callout type="error" title="Content is required">
+**Cause:** The `content` field was not provided in the request.
+
+**Solution:** Make sure to include the file content in the request body.
+</Callout>
+
+<Callout type="error" title="Failed to parse file content">
+**Cause:** The provided content is not in a valid format.
+
+**Solution:** Verify that the content is in the correct format (JSON for package.json, text for requirements.txt, YAML for pubspec.yaml).
+</Callout>
+
+<Callout type="error" title="Internal server error">
+**Cause:** Internal server error, possibly related to communication with package registries.
+
+**Solution:** Try again after a few seconds. If the problem persists, check your internet connectivity.
+</Callout>
+
+<Callout type="warn" title="Package status 'error'">
+**Cause:** Unable to retrieve information about the latest package version.
+
+**Possible reasons:**
+- Package does not exist in the registry
+- Connectivity issues
+- Incorrect package name
+</Callout>

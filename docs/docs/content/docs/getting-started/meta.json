@@ -1,0 +1,9 @@
+{
+    "title": "Getting Started",
+    "pages": [
+        "introduction",
+        "quick-start",
+        "supported-formats",
+        "github-token"
+    ]
+}

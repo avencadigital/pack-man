@@ -1,0 +1,76 @@
+---
+title: Quick Start
+description: Get started with Pack-Man in minutes
+---
+
+# Quick Start
+
+Get up and running with Pack-Man in just a few steps.
+
+## Using the Web Application
+
+### 1. Access Pack-Man
+
+Navigate to [pack-man.vercel.app](https://pack-man.vercel.app) in your browser.
+
+### 2. Choose Your Input Method
+
+Pack-Man offers three ways to analyze your dependencies:
+
+#### Option A: Upload a File
+- Click the "Upload File" tab
+- Drag and drop your dependency file or click to browse
+- Supported files: package.json, requirements.txt, pubspec.yaml
+- Click "Analyze" to start the analysis
+
+#### Option B: Paste Content
+- Click the "Paste Content" tab
+- Paste your dependency file content directly
+- File type is automatically detected from content
+- Click "Analyze" to start the analysis
+
+#### Option C: GitHub URL
+- Click the "GitHub URL" tab
+- Paste your GitHub repository URL (e.g., https://github.com/owner/repo)
+- Pack-Man automatically searches for dependency files
+- Select a file from the discovered files and click "Analyze"
+- For private repositories, configure a GitHub token first
+
+### 3. View Results
+
+After analysis, you'll see:
+- Total number of packages
+- Number of up-to-date packages
+- Number of outdated packages
+- Number of packages with errors
+- Detailed information for each package
+
+## Running Locally
+
+### Prerequisites
+- Node.js 18+ installed
+- npm or pnpm package manager
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/pack-man.git
+
+# Navigate to the project directory
+cd pack-man
+
+# Install dependencies
+npm install
+
+# Start the development server
+npm run dev
+```
+
+Access [http://localhost:3000](http://localhost:3000) to see the application running.
+
+## Next Steps
+
+- Learn about [Supported Formats](/docs/getting-started/supported-formats)
+- Set up a [GitHub Token](/docs/getting-started/github-token) for enhanced features
+- Explore the [Chrome Extension](/docs/extensions/chrome)

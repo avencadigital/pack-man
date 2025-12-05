@@ -1,0 +1,17 @@
+{
+  "enabled": true,
+  "name": "Code Refactoring Assistant",
+  "description": "Monitors code files for structural issues and suggests refactoring improvements. When TypeScript/TSX files are edited, analyzes the code for opportunities to improve clarity and maintainability through better modularization, separation of concerns, and adherence to Single Responsibility Principle. Recommends splitting large components/functions, extracting reusable logic, relocating misplaced code, and applying DRY principles.",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "src/**/*.ts",
+      "src/**/*.tsx"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Analyze the edited file for code structure and maintainability improvements. Review the code for:\n\n1. **Component/Function Size**: Identify functions or components exceeding 200 lines that should be split into smaller, focused units\n2. **Single Responsibility**: Check if each function/component has a single, clear purpose or if it's handling multiple concerns\n3. **Code Duplication**: Look for repeated patterns, logic, or JSX that could be extracted into reusable utilities or components\n4. **Separation of Concerns**: Verify that business logic, UI rendering, and data fetching are properly separated\n5. **Module Placement**: Ensure code is in the appropriate directory:\n   - Business logic → @/lib\n   - React hooks → @/hooks\n   - Type definitions → @/types\n   - UI components → @/components\n   - Feature-specific → feature folders\n6. **Coupling**: Identify tight coupling between modules and suggest ways to reduce dependencies\n7. **Extraction Opportunities**: Find complex calculations, repeated JSX patterns, or stateful logic that should be extracted\n\nProvide specific, actionable refactoring suggestions with:\n- What to refactor and why\n- Where to move or extract code\n- Suggested new file names and locations\n- How the refactoring improves maintainability\n- Priority level (high/medium/low)\n\nFocus on practical improvements that enhance code clarity, reusability, and long-term maintainability while following the project's established patterns and architecture."
+  }
+}

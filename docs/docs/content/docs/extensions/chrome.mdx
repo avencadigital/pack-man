@@ -1,0 +1,281 @@
+---
+title: Chrome Extension
+description: Install and use the Pack-Man Chrome Extension
+---
+
+import { Callout } from 'fumadocs-ui/components/callout';
+import { Steps, Step } from 'fumadocs-ui/components/steps';
+
+# Chrome Extension
+
+The Pack-Man Chrome Extension analyzes GitHub repositories directly in your browser, providing real-time dependency analysis and package version status.
+
+## Features
+
+### Core Functionality
+- **Automatic Repository Detection** - Analyzes repositories on GitHub pages automatically
+- **Multiple Package Managers** - Supports npm (package.json), pip (requirements.txt), and pub (pubspec.yaml)
+- **Visual Badges** - Shows package status with color-coded badges and icons
+- **Private Repository Support** - Works with private repositories when configured with a token
+
+### Enhanced Display (v1.3.0)
+- **Health Score** - Intelligent 0-100% health score based on dependency status
+- **Interactive Details** - Expandable section showing outdated packages and errors
+- **File Type Indicators** - Package manager badges with icons (📦 npm, 🐍 pip, 🎯 pub)
+- **Version Comparison** - Shows current → latest version for outdated packages
+- **Complete Dark Mode** - Full support for GitHub's dark theme with optimized colors
+
+### Advanced Features
+- **Custom API Endpoint** - Configure self-hosted Pack-Man instances for organizations
+- **Advanced Cache Management** - Separate caches for success (5 min TTL) and errors (2 min TTL)
+- **Robust Error Handling** - Context-aware error messages with specific guidance
+  - Authentication errors with token configuration prompts
+  - Rate limit errors with helpful tips
+  - Timeout and connection errors with retry suggestions
+- **Support Integration** - Built-in "Buy me a beer" button to support development
+
+## Installation
+
+### From Source (Development Mode)
+
+<Steps>
+<Step>
+### Clone the Repository
+
+```bash
+git clone https://github.com/yourusername/pack-man.git
+cd pack-man
+```
+</Step>
+
+<Step>
+### Open Chrome Extensions
+
+Navigate to `chrome://extensions/` in your browser
+</Step>
+
+<Step>
+### Enable Developer Mode
+
+Toggle "Developer mode" in the top right corner
+</Step>
+
+<Step>
+### Load Extension
+
+1. Click "Load unpacked"
+2. Select the `chrome-extension` folder from the repository
+</Step>
+</Steps>
+
+<Callout type="info">
+The extension will appear in your browser toolbar with the Pack-Man icon.
+</Callout>
+
+## Configuration
+
+### GitHub Token Setup
+
+To analyze private repositories and increase API rate limits, configure a GitHub Personal Access Token.
+
+<Steps>
+<Step>
+### Create Token
+
+Follow the [GitHub Token Setup guide](/docs/getting-started/github-token) to create a token with appropriate permissions.
+</Step>
+
+<Step>
+### Configure in Extension
+
+1. Click the Pack-Man extension icon in your browser toolbar
+2. Paste your GitHub token in the input field
+3. Click "Save Token"
+4. The extension will validate the token and display your GitHub username if successful
+</Step>
+</Steps>
+
+### Custom API Endpoint
+
+If you're running a self-hosted Pack-Man instance:
+
+1. Click the Pack-Man extension icon
+2. Navigate to "Settings"
+3. Enter your custom API endpoint URL
+4. Click "Save"
+
+<Callout type="warn">
+The extension will validate the custom endpoint before saving.
+</Callout>
+
+## Usage
+
+### Analyzing Repositories
+
+1. Navigate to any GitHub repository page or user/organization repositories page
+2. The extension automatically detects repositories and injects analysis badges
+3. Initial display shows:
+   - Package manager type with icon (📦 npm, 🐍 pip, 🎯 pub)
+   - Total number of packages analyzed
+   - Number of up-to-date packages
+   - Number of outdated packages
+   - Number of packages with errors
+   - Health score with color indicator (💚 Healthy, 💛 Fair, ❤️ Needs attention)
+
+### Interactive Details
+
+Click "Show details" to expand and see:
+- **Outdated Packages List** - Up to 5 packages with version comparison (current → latest)
+- **Error Packages List** - Up to 3 packages with error descriptions
+- **Smart Truncation** - Shows "+X more..." when there are additional packages
+
+### Health Score Indicators
+
+| Score | Indicator | Meaning |
+|-------|-----------|---------|
+| 80-100% | 💚 Healthy | Most dependencies are up-to-date |
+| 50-79% | 💛 Fair | Some outdated dependencies need attention |
+| 0-49% | ❤️ Needs attention | Many dependencies require updates |
+
+### Badge Colors
+
+| Color | Status | Meaning |
+|-------|--------|---------|
+| 🟢 Green | Success | All packages up-to-date |
+| 🟠 Orange | Warning | Some packages outdated |
+| 🔴 Red | Error | Packages with errors or critical issues |
+| 🟣 Purple | Info | Package manager type indicator |
+
+## Troubleshooting
+
+### Enhanced Error Messages (v1.3.0)
+
+The extension now provides context-aware error messages with specific guidance:
+
+#### 🔒 Private Repository Detected
+**Message:** "Authentication required: Add a GitHub token with 'repo' scope to access private repositories."
+
+**Action:** Click "Configure Token" button to set up authentication
+
+#### ⏱️ GitHub API Rate Limit Exceeded
+**Message:** "Tip: Add a GitHub token to increase your rate limit from 60 to 5,000 requests per hour."
+
+**Action:** Click "Add Token" button to configure authentication
+
+#### ⏱️ Request Timed Out
+**Message:** "The analysis took too long. This might be due to a slow connection or large dependency file."
+
+**Solution:** Try refreshing the page or check your internet connection
+
+#### 🔌 Pack-Man API Unavailable
+**Message:** "Unable to reach the analysis service. Please try again in a moment."
+
+**Solution:** Wait a few moments and refresh the page
+
+#### 🔍 Repository or Dependency File Not Found
+**Message:** "This repository may not contain package.json, requirements.txt, or pubspec.yaml files."
+
+**Solution:** Verify the repository contains supported dependency files
+
+### Common Issues
+
+#### "Repository not found or is private"
+- No token configured - Add a GitHub token to access private repositories
+- Invalid token - Ensure your token is valid and not expired
+- Missing permissions - Your token needs the `repo` scope for private repositories
+- Repository doesn't exist - Check if the repository URL is correct
+
+#### "Access denied" or 403 errors
+- **Rate limit exceeded** - Without a token, you're limited to 60 requests/hour. With a token, it's 5,000/hour
+- **Token lacks permissions** - Ensure your token has the `repo` scope
+- **Token expired or revoked** - Generate a new token if needed
+
+#### Extension Communication Errors
+- **Extension needs reload** - Reload the extension from chrome://extensions/
+- **Service worker inactive** - Click the extension icon to wake it up
+- **Check logs** - Open DevTools for detailed error information
+
+### Debugging
+
+1. Open Chrome DevTools (F12)
+2. Go to the extension's background page:
+   - Navigate to `chrome://extensions/`
+   - Find Pack-Man extension
+   - Click "background page" or "service worker"
+3. Check the Console tab for detailed logs
+4. Look for messages starting with "Background:" for debugging information
+
+## API Rate Limits
+
+| Type | Without Token | With Token |
+|------|--------------|------------|
+| Requests/hour | 60 | 5,000 |
+| Recommended for | Testing only | Production use |
+
+## Recent Updates
+
+### Version 1.3.0 (Latest) 🆕
+
+**Enhanced Repository Analysis Display:**
+- **Health Score System** - 0-100% score with visual indicators (💚 💛 ❤️)
+- **Interactive Details Section** - Expandable view with package lists
+- **Improved Error Handling** - Context-aware messages with action buttons
+- **Complete Dark Mode** - Full GitHub dark theme support with CSS variables
+- **Version Comparison** - Shows current → latest for outdated packages
+- **Smart Truncation** - "+X more..." for additional packages
+
+### Version 1.2.0
+
+**Support Integration:**
+- Added "Buy me a beer" button powered by Buy Me a Coffee
+- Custom styled button with beer emoji 🍺
+- Opens donation page in new tab
+
+### Version 1.1.0
+
+**Configurable API Endpoint:**
+- Custom API endpoints for self-hosted instances
+- Built-in validation before saving
+- Easy reset to default
+- Automatic cache clearing on API changes
+- Perfect for organizations running private Pack-Man instances
+
+### Version 1.0.2
+
+**Enhanced Performance:**
+- Separate error cache with shorter TTL (2 minutes)
+- Cache size limiting (max 100 entries)
+- Automatic cleanup of expired entries
+- 10-second timeout for network requests
+- Retry logic with 2 attempts and 1s delay
+
+## Compatibility
+
+- ✅ Chrome 88+
+- ✅ Edge 88+
+- ✅ Brave (latest)
+- ✅ GitHub light and dark themes
+- ✅ Mobile and desktop layouts
+
+## Support
+
+If you encounter issues:
+
+1. Check the troubleshooting section above
+2. Look at the debug logs in the browser console
+3. Open an issue on GitHub with:
+   - Description of the problem
+   - Steps to reproduce
+   - Console logs (with sensitive data removed)
+   - Browser version and OS
+
+## Contributing
+
+The Chrome extension is open source! Contributions are welcome:
+
+- **Bug Reports** - Open an issue with detailed information
+- **Feature Requests** - Suggest new features or improvements
+- **Pull Requests** - Submit code improvements or fixes
+- **Documentation** - Help improve this guide
+
+See the [chrome-extension/](https://github.com/yourusername/pack-man/tree/main/chrome-extension) directory for source code.
