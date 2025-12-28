@@ -36,6 +36,36 @@ export async function OPTIONS() {
   return createCorsResponse(null, { status: 200 });
 }
 
+export async function GET() {
+  return createCorsResponse({
+    name: "PackMan - Package Analyzer API",
+    version: "0.1.1",
+    status: "operational",
+    description: "Analyze package dependencies and check for outdated packages across multiple package managers.",
+    documentation: "https://docs.pack-man.tech/",
+    endpoints: {
+      "POST /api/analyze-packages": {
+        description: "Analyze package file content for outdated dependencies",
+        contentType: "application/json",
+        body: {
+          content: "string (required) - Package file content (package.json, requirements.txt, etc.)",
+          fileName: "string (optional) - Original filename to help detect package manager"
+        },
+        supportedFormats: [
+          "package.json (npm/yarn/pnpm)",
+          "requirements.txt (pip)",
+          "pubspec.yaml (Dart/Flutter)"
+        ]
+      }
+    },
+    links: {
+      website: "https://pack-man.tech",
+      github: "https://github.com/avencadigital/pack-man",
+      chromeExtension: "COMING SOON"
+    }
+  });
+}
+
 export async function POST(request: NextRequest) {
   try {
     // Validate Content-Length before parsing body
